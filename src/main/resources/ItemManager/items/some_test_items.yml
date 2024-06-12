@@ -1,0 +1,7 @@
+# https://cjcrafter.gitbook.io/core/item-serializer
+
+gear:
+  Type: IRON_INGOT
+  Name: "<yellow>Gear Wheel"
+  Lore:
+    - "<gray>A gear wheel used in crafting."
