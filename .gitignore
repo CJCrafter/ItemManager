@@ -26,3 +26,6 @@ build/
 # Maven
 log/
 target/
+
+# Release files
+release

@@ -37,6 +37,7 @@ dependencies {
 
 tasks.shadowJar {
     archiveFileName.set("ItemManager-${project.version}.jar")
+    destinationDirectory.set(file("release"))
 
     dependencies {
         relocate ("org.bstats", "com.cjcrafter.itemmanager.lib.bstats") {
@@ -65,10 +66,32 @@ githubRelease {
     allowUploadToExisting.set(false)
     apiEndpoint.set("https://api.github.com")
 
-    setReleaseAssets(tasks.shadowJar.get().outputs.files)
+    setReleaseAssets(file("release").listFiles())
 
     // If set to true, you can debug that this would do
     dryRun.set(false)
+}
+
+tasks.register("preRelease").configure {
+    val folder = file("release")
+    folder.mkdirs()
+    for (file in folder.listFiles()!!) {
+        if ("MechanicsCore" !in file.name)
+            file.delete()
+    }
+
+    dependsOn(":shadowJar")
+    finalizedBy("zipForRelease")
+}
+
+tasks.register<Zip>("zipForRelease") {
+    dependsOn("preRelease")
+    archiveFileName.set("ItemManager.zip")
+    destinationDirectory.set(file("release"))
+
+    from(file("release")) {
+        include("*.jar")
+    }
 }
 
 tasks.test {
